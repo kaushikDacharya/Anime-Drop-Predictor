@@ -1,6 +1,6 @@
-numpy==1.26.4
+numpy==2.4.2
 pandas==2.2.3
-scikit-learn==1.5.2
+scikit-learn==1.9.0
 joblib==1.4.2
 flask
 flask-cors
