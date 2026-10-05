@@ -30,7 +30,7 @@ except Exception as e:
     print(f"Warning: Could not load data/raw/anime.csv. Search will not work. Error: {e}")
     anime_df_global = None
 
-@app.route('https://anime-drop-predictor.onrender.com/search_anime', methods=['GET'])
+@app.route('/search_anime', methods=['GET'])
 def search_anime():
     q = request.args.get("q", "").lower()
     if not q or anime_df_global is None:
@@ -176,7 +176,7 @@ def compute_user_features(username: str) -> dict:
         "status_preference": status_preference
     }
 
-@app.route('https://anime-drop-predictor.onrender.com/predict_user_anime', methods=['POST'])
+@app.route('/predict_user_anime', methods=['POST'])
 def predict_user_anime():
     """
     Expects:
@@ -274,7 +274,7 @@ def predict_user_anime():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
-@app.route('https://anime-drop-predictor.onrender.com/health', methods=['GET'])
+@app.route('/health', methods=['GET'])
 def health():
     return jsonify({"status": "ok"})
 
