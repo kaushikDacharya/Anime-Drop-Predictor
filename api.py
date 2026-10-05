@@ -239,7 +239,10 @@ def predict_user_anime():
         combined_features = {
             "anime_id": anime_id,
             "score": float(score),
-            "genres": ",".join([g["name"] for g in anime_data.get("genres", [])]),
+            "genres": ",".join(
+    g["name"] if isinstance(g, dict) else g
+    for g in anime_data.get("genres", [])
+),
             "episode_count": int(episodes),
             "member_count": int(members),
             "airing_year": int(anime_data.get("year") or 2020),
