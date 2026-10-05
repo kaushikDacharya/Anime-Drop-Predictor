@@ -76,7 +76,7 @@ animeSearch.addEventListener('input', (e) => {
   
   searchTimeout = setTimeout(async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:5000/search_anime?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`https://anime-drop-predictor.onrender.com/search_anime?q=${encodeURIComponent(query)}`);
       const data = await res.json();
       
       renderSearchResults(data.data);
