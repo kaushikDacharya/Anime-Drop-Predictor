@@ -226,14 +226,23 @@ posterEl.onerror = function() {
    if (details && selectedAnime && selectedAnime.mal_id === anime.mal_id) {
 
     if (details.coverImage) {
-        const posterUrl =
-            details.coverImage.extraLarge ||
-            details.coverImage.large ||
-            placeholder;
+    const posterUrl =
+        details.coverImage.extraLarge ||
+        details.coverImage.large ||
+        placeholder;
 
-        posterEl.src = posterUrl;
-        dynamicBg.style.backgroundImage = `url(${posterUrl})`;
-    }
+    posterEl.src = posterUrl;
+
+    // Save the AniList poster so the result panel can use it too
+    selectedAnime.images = {
+        jpg: {
+            large_image_url: posterUrl,
+            image_url: posterUrl
+        }
+    };
+
+    dynamicBg.style.backgroundImage = `url(${posterUrl})`;
+}
 
     if (details.description) {
         selectedAnime.synopsis = details.description;
