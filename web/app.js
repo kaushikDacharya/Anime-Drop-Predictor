@@ -143,16 +143,43 @@ function renderSearchResults(results) {
 }
 
 // Fetch rich data (poster, synopsis) from Jikan API
-async function fetchJikanDetails(malId) {
-  try {
-    const res = await fetch(`https://api.jikan.moe/v4/anime/${malId}`);
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.data || null;
-  } catch (err) {
-    console.warn('Jikan fetch failed, using local data only:', err);
-    return null;
-  }
+async function fetchAnimeDetails(malId) {
+    try {
+        const query = `
+            query ($idMal: Int) {
+                Media(idMal: $idMal, type: ANIME) {
+                    id
+                    coverImage {
+                        large
+                        extraLarge
+                    }
+                    description
+                    genres
+                }
+            }
+        `;
+
+        const res = await fetch('https://graphql.anilist.co', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                query: query,
+                variables: { idMal: Number(malId) }
+            })
+        });
+
+        if (!res.ok) return null;
+
+        const json = await res.json();
+        return json.data?.Media || null;
+
+    } catch (err) {
+        console.warn('AniList fetch failed:', err);
+        return null;
+    }
 }
 
 async function selectAnime(anime) {
@@ -193,28 +220,29 @@ posterEl.onerror = function() {
   if (anime.mal_id) {
     previewLoadingBadge.classList.remove('hidden');
     
-    const jikan = await fetchJikanDetails(anime.mal_id);
+    const details = await fetchAnimeDetails(anime.mal_id);
     
     // Only update if user hasn't changed selection while we were fetching
-    if (jikan && selectedAnime && selectedAnime.mal_id === anime.mal_id) {
-      // Merge poster images
-      if (jikan.images) {
-        selectedAnime.images = jikan.images;
-        const posterUrl = jikan.images.jpg?.large_image_url || jikan.images.jpg?.image_url || placeholder;
+   if (details && selectedAnime && selectedAnime.mal_id === anime.mal_id) {
+
+    if (details.coverImage) {
+        const posterUrl =
+            details.coverImage.extraLarge ||
+            details.coverImage.large ||
+            placeholder;
+
         posterEl.src = posterUrl;
         dynamicBg.style.backgroundImage = `url(${posterUrl})`;
-      }
-      
-      // Merge synopsis
-      if (jikan.synopsis) {
-        selectedAnime.synopsis = jikan.synopsis;
-      }
-      
-      // Merge themes if available
-      if (jikan.themes) {
-        selectedAnime.themes = jikan.themes;
-      }
     }
+
+    if (details.description) {
+        selectedAnime.synopsis = details.description;
+    }
+
+    if (details.genres) {
+        selectedAnime.genres = details.genres;
+    }
+}
     
     posterEl.classList.remove('poster-loading');
     previewLoadingBadge.classList.add('hidden');
