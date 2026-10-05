@@ -1,18 +1,10 @@
-# Local Virtual Environment
-venv/
-.venv/
-
-# Data Directories (exclude raw and processed data files)
+# Data Directories
 data/raw/*
 data/processed/*
+
+# Keep anime.csv
+!data/raw/anime.csv
+
+# Keep placeholder files
 !data/raw/.gitkeep
 !data/processed/.gitkeep
-
-# Models
-models/*.joblib
-
-# Notebooks
-*.ipynb
-
-# Python cache files
-__pycache__/
