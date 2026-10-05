@@ -259,7 +259,7 @@ predictForm.addEventListener('submit', async (e) => {
     // We already have stats directly inside selectedAnime from our local endpoint!
     const statsData = selectedAnime.stats || {};
 
-    const response = await fetch('http://127.0.0.1:5000/predict_user_anime', {
+    const response = await fetch('https://anime-drop-predictor.onrender.com/predict_user_anime', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
