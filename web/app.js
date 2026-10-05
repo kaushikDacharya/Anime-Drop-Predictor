@@ -238,10 +238,6 @@ posterEl.onerror = function() {
     if (details.description) {
         selectedAnime.synopsis = details.description;
     }
-
-    if (details.genres) {
-        selectedAnime.genres = details.genres;
-    }
 }
     
     posterEl.classList.remove('poster-loading');
