@@ -166,8 +166,17 @@ async function selectAnime(anime) {
   const posterEl = document.getElementById('preview-poster');
   
   // Show preview immediately with placeholder
-  posterEl.src = placeholder;
-  posterEl.onerror = function() { this.onerror=null; this.src=placeholder; };
+  const animePoster =
+  anime.images?.jpg?.large_image_url ||
+  anime.images?.jpg?.image_url ||
+  anime.images?.jpg?.small_image_url ||
+  placeholder;
+
+posterEl.src = animePoster;
+posterEl.onerror = function() {
+  this.onerror = null;
+  this.src = placeholder;
+};
   posterEl.classList.add('poster-loading');
   document.getElementById('preview-title').textContent = anime.title;
   
